@@ -1,54 +1,53 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import type {User} from '../types';
-import { authService } from '../api/services';
+import { createContext, useState, useContext, type ReactNode } from 'react';
+import type { FC } from 'react';
+import { logoutApi } from '../services/authService';
 
 interface AuthContextType {
-    user: User | null;
-    login: (token: string) => void;
-    logout: () => void;
-    isAuthenticated: boolean;
+    token: string | null;
+    loginCtx: (token: string) => void;
+    logoutCtx: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+interface AuthProviderProps {
+    children: ReactNode;
+}
 
-    const login = (token: string) => {
-        localStorage.setItem('access_token', token);
-        fetchUser();
+export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
+    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+
+    const loginCtx = (newToken: string) => {
+        localStorage.setItem('token', newToken);
+        setToken(newToken);
     };
 
-    const logout = () => {
-        localStorage.removeItem('access_token');
-        setUser(null);
-        setIsAuthenticated(false);
-    };
-
-    const fetchUser = async () => {
+    const logoutCtx = async () => {
         try {
-            const response = await authService.me();
-            setUser(response.data);
-            setIsAuthenticated(true);
-        } catch {
-            logout();
+            if (token) {
+                await logoutApi();
+            }
+        } catch (error) {
+            console.error("Logout API failed, forcing local logout", error);
+        } finally {
+            localStorage.removeItem('token');
+            setToken(null);
+            window.location.href = '/login';
         }
     };
-
-    useEffect(() => {
-        const token = localStorage.getItem('access_token');
-        if (token) {
-            fetchUser();
-        }
-    }, []);
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
-    {children}
-    </AuthContext.Provider>
-);
+        <AuthContext.Provider value={{ token, loginCtx, logoutCtx }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = () => useContext(AuthContext)!;
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};

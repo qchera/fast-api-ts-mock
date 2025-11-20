@@ -1,40 +1,14 @@
-export const ProgressStatus = {
-    PLACED: "placed",
-    IN_TRANSIT: "in transit",
-    SHIPPED: "shipped",
-} as const;
-
-export type ProgressStatus = (typeof ProgressStatus)[keyof typeof ProgressStatus];
-
 export interface User {
-    id: string;
+    id?: number;
+    email: string;
     username: string;
     full_name: string;
-    email: string;
 }
 
 export interface Shipment {
-    id: string;
+    id?: number;
     product: string;
-    progress: ProgressStatus;
-    estimated_delivery: string;
-    user_id: string;
-}
-
-export interface ShipmentCreate {
-    product: string;
-    progress?: ProgressStatus;
-    estimated_delivery?: string;
-}
-
-export interface AuthResponse {
-    access_token: string;
-    token_type: string;
-}
-
-export interface UserRegister {
-    username: string;
-    full_name: string;
-    email: string;
-    password: string;
+    progress: string; // e.g., "placed", "shipped"
+    estimated_delivery?: string | null;
+    user?: User;
 }
