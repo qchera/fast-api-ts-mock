@@ -1,0 +1,12 @@
+.dashboard { max-width: 800px; margin: 0 auto; }
+.controls { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.fillBtn { background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+.table th { background-color: #f2f2f2; }
+.deleteBtn { background: #e74c3c; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; }
+
+/* Стилі для статусів */
+.placed { color: #f39c12; font-weight: bold; }
+.intransit { color: #3498db; font-weight: bold; }
+.shipped { color: #27ae60; font-weight: bold; }
