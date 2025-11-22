@@ -7,7 +7,11 @@ import DashboardPage from './pages/DashboardPage';
 import UsersPage from './pages/UsersPage';
 import ShipmentsPage from './pages/ShipmentsPage';
 import './App.css';
-import RegisterPage from "./pages/RegisterPage.tsx";
+import RegisterPage from "./pages/RegisterPage";
+import store from "./redux/store";
+import {Provider} from "react-redux";
+import GlobalErrorListener from "./components/error/GlobalErrorListener";
+import {ToastContainer} from "react-toastify";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     const { token } = useAuth();
@@ -31,11 +35,15 @@ const AppRoutes = () => {
 
 const App: React.FC = () => {
     return (
-        <AuthProvider>
-            <Router>
-                <AppRoutes />
-            </Router>
-        </AuthProvider>
+        <Provider store={store}>
+            <AuthProvider>
+                <Router>
+                    <GlobalErrorListener />
+                    <ToastContainer />
+                    <AppRoutes />
+                </Router>
+            </AuthProvider>
+        </Provider>
     );
 };
 

@@ -6,17 +6,15 @@ import { useAuth } from '../context/AuthContext';
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const { loginCtx } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
 
         try {
             console.log("Attempting login...");
-            const token = await login(email, password);;
+            const token = await login(email, password);
 
             console.log("Login success, received token:", token);
 
@@ -29,11 +27,9 @@ const LoginPage: React.FC = () => {
                 }, 100);
             } else {
                 console.error("No token found in response", token);
-                setError('No access token received from server');
             }
         } catch (err: any) {
             console.error("Login error:", err);
-            setError('Invalid email or password');
         }
     };
 
@@ -41,8 +37,6 @@ const LoginPage: React.FC = () => {
         <div className="auth-page">
             <div className="auth-card">
                 <h2 className="auth-title">Welcome Back</h2>
-                {error && <div className="error-msg">{error}</div>}
-
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
                         <label htmlFor="email">Email / Username</label>

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import store from '../redux/store';
+import { setError } from '../redux/slices/errorSlice';
 
 const BASE_URL = 'http://127.0.0.1:8080';
 
@@ -9,7 +11,6 @@ const client = axios.create({
 
 client.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
-    console.log(`Request to ${config.url} - Token exists: ${!!token}`);
     if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -19,11 +20,19 @@ client.interceptors.request.use((config) => {
 client.interceptors.response.use(
     (response) => response,
     (error) => {
+        let errorMessage = "Something went wrong";
+
         if (error.response) {
+            errorMessage = error.response.data?.detail || `Error: ${error.response.status}`;
             console.error('API Error:', error.response.status, error.response.data);
+        } else if (error.request) {
+            errorMessage = "Network Error: No response from server";
+            console.error('Network Error:', error.message);
         } else {
-            console.error('Network/CORS Error:', error.message);
+            errorMessage = error.message;
         }
+
+        store.dispatch(setError(errorMessage));
 
         if (error.response?.status === 401) {
             console.warn('401 Unauthorized - Redirecting to login...');

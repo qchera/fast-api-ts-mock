@@ -1,5 +1,5 @@
 import client from '../api/client';
-import type { Shipment } from '../types';
+import type {Shipment, ShipmentArrVal, ShipmentCreateSimple} from '../types';
 
 const defaultPath = '/shipments';
 
@@ -13,8 +13,8 @@ export const getMyShipments = async () => {
     return response.data;
 };
 
-export const createShipment = async (shipment: Shipment) => {
-    const response = await client.post<Shipment>(defaultPath, shipment);
+export const createShipment = async (shipment: ShipmentCreateSimple) => {
+    const response = await client.post<ShipmentArrVal>(defaultPath, shipment);
     return response.data;
 };
 
