@@ -127,7 +127,7 @@ const ShipmentsPage: React.FC = () => {
                             </td>
                             <td>{formatDate(s.estimated_delivery)}</td>
                             <td>{s.buyer_username}</td>
-                            <td>{s.buyer_username}</td>
+                            <td>{s.seller_username}</td>
                             <td>
                                 <span className={`approval-badge ${s.approval_status}`}>
                                     {s.approval_status}
