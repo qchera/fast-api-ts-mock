@@ -40,12 +40,20 @@ const userSlice = createSlice({
                 state.userData.sales.push(action.payload);
             }
         },
+        updateSale(state, action: PayloadAction<ShipmentSummary>) {
+            if (state.userData && state.userData.sales) {
+                const index = state.userData.sales.findIndex(p => p.id === action.payload.id);
+                if (index !== -1) {
+                    state.userData.sales[index] = action.payload;
+                }
+            }
+        },
         clearUserData(state) {
             state.userData = null;
         }
     }
 })
 
-export const { setUserData, addPurchase, updatePurchase, addSale, clearUserData } = userSlice.actions;
+export const { setUserData, addPurchase, updatePurchase, addSale, updateSale, clearUserData } = userSlice.actions;
 
 export default userSlice.reducer;

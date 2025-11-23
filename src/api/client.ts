@@ -1,6 +1,7 @@
 import axios from 'axios';
 import store from '../redux/store';
 import { setError } from '../redux/slices/errorSlice';
+import {disconnectSocket} from "../redux/actions/socketActions.ts";
 
 const BASE_URL = 'http://127.0.0.1:8080';
 
@@ -36,6 +37,7 @@ client.interceptors.response.use(
 
         if (error.response?.status === 401) {
             console.warn('401 Unauthorized - Redirecting to login...');
+            store.dispatch(disconnectSocket())
             localStorage.removeItem('token');
             window.location.href = '/login';
         }

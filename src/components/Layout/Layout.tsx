@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {useDispatch, useSelector} from "react-redux";
 import {clearUserData, setUserData} from "../../redux/slices/userSlice.ts";
 import {getMe} from "../../services/userService.ts";
+import {connectSocket} from "../../redux/actions/socketActions.ts";
 
 const Layout: React.FC = () => {
     const { logoutCtx } = useAuth();
@@ -17,14 +18,15 @@ const Layout: React.FC = () => {
 
     useEffect(() => {
         if (!userData) {
-            getMe()
-                .then((data) => {
-                    dispatch(setUserData(data));
-
-                })
+            (async () => {
+                return await getMe()
+            } )().then((data) => {
+                dispatch(setUserData(data));
+            })
                 .catch(console.error);
         }
-    }, [dispatch]);
+        dispatch(connectSocket())
+    }, [dispatch, userData]);
 
     return (
         <div className="app-layout">
