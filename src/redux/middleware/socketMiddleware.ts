@@ -1,5 +1,5 @@
 import {connectSocket, disconnectSocket} from "../actions/socketActions.ts";
-import {addPurchase, updatePurchase, updateSale} from "../slices/userSlice.ts";
+import {addPurchase, updateSale} from "../slices/userSlice.ts";
 
 export const SocketMiddleware = (store) => {
     let socket: WebSocket | null = null;

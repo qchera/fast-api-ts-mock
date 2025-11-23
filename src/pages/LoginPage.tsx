@@ -2,19 +2,28 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
+import {useDispatch} from "react-redux";
+import {setError} from "../redux/slices/errorSlice.ts";
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState('');
+    const [loginParam, setLoginParam] = useState('');
     const [password, setPassword] = useState('');
     const { loginCtx } = useAuth();
     const navigate = useNavigate();
+    const dispatch = useDispatch()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
             console.log("Attempting login...");
-            const token = await login(email, password);
+            if (!loginParam) {
+                dispatch(setError("Your email or username can't be empty"))
+            }
+            if (!password) {
+                dispatch(setError("Your password can't be empty"))
+            }
+            const token = await login(loginParam, password);
 
             console.log("Login success, received token:", token);
 
@@ -43,8 +52,8 @@ const LoginPage: React.FC = () => {
                         <input
                             id="email"
                             type="text"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={loginParam}
+                            onChange={(e) => setLoginParam(e.target.value)}
                             required
                         />
                     </div>

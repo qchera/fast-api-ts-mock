@@ -39,7 +39,15 @@ const ShipmentsPage: React.FC = () => {
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (form.buyer_username === currentUsername) {
+        if (!form.product) {
+            dispatch(setError("Product can't be empty"))
+            return;
+        }
+        if (!form.buyer_username) {
+            dispatch(setError("Buyer can't be empty"))
+            return;
+        }
+        else if (form.buyer_username === currentUsername) {
             dispatch(setError("Buyer username cannot be the same as the current user's username."));
             return;
         }

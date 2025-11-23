@@ -10,8 +10,8 @@ const GlobalErrorListener = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log(`error message ${errorMessage}`)
         if (errorMessage) {
+            console.log(`error message ${errorMessage}`)
             toast.error(errorMessage, {
                 toastId: errorMessage,
                 position: "top-right",
