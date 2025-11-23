@@ -1,5 +1,5 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import type {ShipmentArrVal, User} from "../../types";
+import type {ShipmentSummary, User} from "../../types";
 
 interface UserState {
     userData: User | null;
@@ -16,7 +16,7 @@ const userSlice = createSlice({
         setUserData(state, action: PayloadAction<User>) {
             state.userData = action.payload;
         },
-        addPurchase(state, action: PayloadAction<ShipmentArrVal>) {
+        addPurchase(state, action: PayloadAction<ShipmentSummary>) {
             if (state.userData) {
                 if (!state.userData.purchases) {
                     state.userData.purchases = []
@@ -24,7 +24,15 @@ const userSlice = createSlice({
                 state.userData.purchases.push(action.payload)
             }
         },
-        addSale(state, action: PayloadAction<ShipmentArrVal>) {
+        updatePurchase(state, action: PayloadAction<ShipmentSummary>) {
+            if (state.userData && state.userData.purchases) {
+                const index = state.userData.purchases.findIndex(p => p.id === action.payload.id);
+                if (index !== -1) {
+                    state.userData.purchases[index] = action.payload;
+                }
+            }
+        },
+        addSale(state, action: PayloadAction<ShipmentSummary>) {
             if (state.userData) {
                 if (!state.userData.sales) {
                     state.userData.sales = [];
@@ -38,6 +46,6 @@ const userSlice = createSlice({
     }
 })
 
-export const { setUserData, addPurchase, addSale, clearUserData } = userSlice.actions;
+export const { setUserData, addPurchase, updatePurchase, addSale, clearUserData } = userSlice.actions;
 
 export default userSlice.reducer;

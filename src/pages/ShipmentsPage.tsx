@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getShipments, createShipment } from '../services/shipmentService';
-import type {Shipment, ProgressStatus, ShipmentCreateSimple, ShipmentArrVal} from '../types';
+import type { ProgressStatus, ShipmentCreateSimple, ShipmentSummary} from '../types';
 import {formatDate} from "../utils/dateUtils.ts";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,7 +9,7 @@ import {setError} from "../redux/slices/errorSlice.ts";
 import {addSale} from "../redux/slices/userSlice.ts";
 
 const ShipmentsPage: React.FC = () => {
-    const [allShipments, setAllShipments] = useState<Shipment[]>([]);
+    const [allShipments, setAllShipments] = useState<ShipmentSummary[]>([]);
     const [form, setForm] = useState<ShipmentCreateSimple>({
         product: '',
         progress: 'placed',
@@ -28,7 +28,9 @@ const ShipmentsPage: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchList();
+        (async () => {
+            await fetchList();
+        })();
     }, []);
 
     const clearForm = () => {
@@ -45,10 +47,10 @@ const ShipmentsPage: React.FC = () => {
             ...form,
             estimated_delivery: form.estimated_delivery === '' ? null : form.estimated_delivery,
         };
-        const shipment: ShipmentArrVal = await createShipment(payload);
+        const shipment: ShipmentSummary = await createShipment(payload);
         dispatch(addSale(shipment))
         clearForm();
-        fetchList();
+        await fetchList();
     };
 
     return (
@@ -110,6 +112,7 @@ const ShipmentsPage: React.FC = () => {
                         <th>Estimated Delivery</th>
                         <th>Buyer</th>
                         <th>Seller</th>
+                        <th>Approval Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -123,8 +126,13 @@ const ShipmentsPage: React.FC = () => {
                                 </span>
                             </td>
                             <td>{formatDate(s.estimated_delivery)}</td>
-                            <td>{s.buyer?.username}</td>
-                            <td>{s.seller?.username}</td>
+                            <td>{s.buyer_username}</td>
+                            <td>{s.buyer_username}</td>
+                            <td>
+                                <span className={`approval-badge ${s.approval_status}`}>
+                                    {s.approval_status}
+                                </span>
+                            </td>
                         </tr>
                     ))}
                     </tbody>

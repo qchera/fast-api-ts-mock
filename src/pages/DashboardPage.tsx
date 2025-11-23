@@ -1,9 +1,38 @@
-import type {User} from '../types';
+import type {ApprovalStatus, ShipmentSummary, User} from '../types';
 import {formatDate} from "../utils/dateUtils";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import React from "react";
+import ApprovalActions from "../components/ApprovalActions.tsx";
+import {updateApprovalStatus} from "../services/shipmentService.ts";
+import {updatePurchase} from "../redux/slices/userSlice.ts";
 
 const DashboardPage: React.FC = () => {
     const me: User | null = useSelector((state: any) => state.user.userData);
+    const dispatch = useDispatch()
+
+    const handleApprovalAction = async (id: string, status: ApprovalStatus) => {
+        const shipment: ShipmentSummary = await updateApprovalStatus(id, status)
+        dispatch(updatePurchase(shipment))
+    }
+
+    const renderApprovalColumn = (s: ShipmentSummary) => {
+        return (
+            <div className="approval-cell-content">
+                <span className={`approval-badge ${s.approval_status}`}>
+                    {s.approval_status}
+                </span>
+
+                {s.approval_status === 'pending' && (
+                    <div className="approval-actions-wrapper">
+                        <ApprovalActions
+                            id={s.id || ''}
+                            onAction={handleApprovalAction}
+                        />
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     return (
         <div className="page-container">
@@ -34,6 +63,7 @@ const DashboardPage: React.FC = () => {
                                 <th>Progress</th>
                                 <th>Estimated Delivery</th>
                                 <th>Seller's Username</th>
+                                <th>Approval Status</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -47,6 +77,9 @@ const DashboardPage: React.FC = () => {
                                     </td>
                                     <td>{formatDate(s.estimated_delivery)}</td>
                                     <td>{s.seller_username}</td>
+                                    <td>
+                                        {renderApprovalColumn(s)}
+                                    </td>
                                 </tr>
                             ))}
                             </tbody>
@@ -69,6 +102,7 @@ const DashboardPage: React.FC = () => {
                                 <th>Progress</th>
                                 <th>Estimated Delivery</th>
                                 <th>Buyer's Username</th>
+                                <th>Approval Status</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -82,6 +116,11 @@ const DashboardPage: React.FC = () => {
                                     </td>
                                     <td>{formatDate(s.estimated_delivery)}</td>
                                     <td>{s.buyer_username}</td>
+                                    <td>
+                                        <span className={`approval-badge ${s.approval_status}`}>
+                                            {s.approval_status}
+                                        </span>
+                                    </td>
                                 </tr>
                             ))}
                             </tbody>
