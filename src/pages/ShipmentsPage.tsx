@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { getShipments, createShipment } from '../services/shipmentService';
+import React, { useState } from 'react';
+import { createShipment } from '../services/shipmentService';
 import type { ProgressStatus, ShipmentCreateSimple, ShipmentSummary} from '../types';
 import {formatDate} from "../utils/dateUtils.ts";
 import DatePicker from "react-datepicker";
@@ -7,34 +7,21 @@ import "react-datepicker/dist/react-datepicker.css";
 import {useDispatch, useSelector} from "react-redux";
 import {setError} from "../redux/slices/errorSlice.ts";
 import {addSale} from "../redux/slices/userSlice.ts";
+import {selectAllShipments, selectUsername} from "../redux/store.ts";
 
 const ShipmentsPage: React.FC = () => {
-    const [allShipments, setAllShipments] = useState<ShipmentSummary[]>([]);
     const [form, setForm] = useState<ShipmentCreateSimple>({
         product: '',
         progress: 'placed',
-        estimated_delivery: '',
-        buyer_username: '',
+        estimatedDelivery: '',
+        buyerUsername: '',
     });
-    const currentUsername = useSelector((state: any) => state.user.userData?.username);
     const dispatch = useDispatch();
-
-    const fetchList = async () => {
-        try {
-            await getShipments().then(setAllShipments).catch(console.error);
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    useEffect(() => {
-        (async () => {
-            await fetchList();
-        })();
-    }, []);
+    const currentUsername = useSelector(selectUsername);
+    const myShipments: ShipmentSummary[] = useSelector(selectAllShipments)
 
     const clearForm = () => {
-        setForm({ product: '', progress: 'placed', estimated_delivery: '', buyer_username: '' });
+        setForm({ product: '', progress: 'placed', estimatedDelivery: '', buyerUsername: '' });
     }
 
     const handleCreate = async (e: React.FormEvent) => {
@@ -43,22 +30,21 @@ const ShipmentsPage: React.FC = () => {
             dispatch(setError("Product can't be empty"))
             return;
         }
-        if (!form.buyer_username) {
+        if (!form.buyerUsername) {
             dispatch(setError("Buyer can't be empty"))
             return;
         }
-        else if (form.buyer_username === currentUsername) {
+        else if (form.buyerUsername === currentUsername) {
             dispatch(setError("Buyer username cannot be the same as the current user's username."));
             return;
         }
         const payload = {
             ...form,
-            estimated_delivery: form.estimated_delivery === '' ? null : form.estimated_delivery,
+            estimatedDelivery: form.estimatedDelivery === '' ? null : form.estimatedDelivery,
         };
         const shipment: ShipmentSummary = await createShipment(payload);
         dispatch(addSale(shipment))
         clearForm();
-        await fetchList();
     };
 
     return (
@@ -85,11 +71,11 @@ const ShipmentsPage: React.FC = () => {
                     </select>
                     <div className="custom-datepicker-wrapper">
                         <DatePicker
-                            selected={form.estimated_delivery ? new Date(form.estimated_delivery) : null}
+                            selected={form.estimatedDelivery ? new Date(form.estimatedDelivery) : null}
                             onChange={(date: Date | null) => {
                                 setForm({
                                     ...form,
-                                    estimated_delivery: date ? date.toISOString() : ''
+                                    estimatedDelivery: date ? date.toISOString() : ''
                                 });
                             }}
                             showTimeSelect
@@ -103,8 +89,8 @@ const ShipmentsPage: React.FC = () => {
                     </div>
                     <input
                         placeholder="Buyer Username"
-                        value={form.buyer_username}
-                        onChange={e => setForm({ ...form, buyer_username: e.target.value })}
+                        value={form.buyerUsername}
+                        onChange={e => setForm({ ...form, buyerUsername: e.target.value })}
                     />
                     <button type="submit">Create</button>
                 </form>
@@ -124,7 +110,9 @@ const ShipmentsPage: React.FC = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {allShipments.map((s) => (
+                    {myShipments.sort((s1, s2) => {
+                        return new Date(s1.estimatedDelivery).getTime() - new Date(s2.estimatedDelivery).getTime();
+                    }).map((s) => (
                         <tr key={s.id}>
                             <td>{s.id}</td>
                             <td>{s.product}</td>
@@ -133,12 +121,12 @@ const ShipmentsPage: React.FC = () => {
                                     {s.progress}
                                 </span>
                             </td>
-                            <td>{formatDate(s.estimated_delivery)}</td>
-                            <td>{s.buyer_username}</td>
-                            <td>{s.seller_username}</td>
+                            <td>{formatDate(s.estimatedDelivery)}</td>
+                            <td>{s.buyerUsername}</td>
+                            <td>{s.sellerUsername}</td>
                             <td>
-                                <span className={`approval-badge ${s.approval_status}`}>
-                                    {s.approval_status}
+                                <span className={`approval-badge ${s.approvalStatus}`}>
+                                    {s.approvalStatus}
                                 </span>
                             </td>
                         </tr>

@@ -18,8 +18,8 @@ export const createShipment = async (shipment: ShipmentCreateSimple) => {
     return response.data;
 };
 
-export const updateApprovalStatus = async (id: string, approval_status: ApprovalStatus) => {
-    const response = await client.patch<ShipmentSummary>(`${defaultPath}/${id}/approval`, { approval_status });
+export const updateApprovalStatus = async (id: string, approvalStatus: ApprovalStatus) => {
+    const response = await client.patch<ShipmentSummary>(`${defaultPath}/${id}/approval`, { approvalStatus });
     return response.data;
 }
 

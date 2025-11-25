@@ -5,7 +5,7 @@ export interface User {
     id?: string;
     email: string;
     username: string;
-    full_name: string;
+    fullName: string;
     purchases?: ShipmentSummary[];
     sales?: ShipmentSummary[];
 }
@@ -13,32 +13,32 @@ export interface User {
 export interface UserPlain {
     email: string;
     username: string;
-    full_name: string;
+    fullName: string;
 }
 
 export interface Shipment {
     id?: string;
     product: string;
     progress: ProgressStatus;
-    estimated_delivery?: string | null;
+    estimatedDelivery?: string | null;
     buyer?: User;
     seller?: User;
-    approval_status: ApprovalStatus;
+    approvalStatus: ApprovalStatus;
 }
 
 export interface ShipmentCreateSimple {
     product: string;
     progress: ProgressStatus;
-    estimated_delivery?: string | null;
-    buyer_username: string;
+    estimatedDelivery?: string | null;
+    buyerUsername: string;
 }
 
 export interface ShipmentSummary {
-    id?: string;
+    id: string | null;
     product: string;
     progress: ProgressStatus;
-    estimated_delivery: string | null;
-    buyer_username: string;
-    seller_username: string;
-    approval_status: ApprovalStatus;
+    estimatedDelivery: string;
+    buyerUsername: string;
+    sellerUsername: string;
+    approvalStatus: ApprovalStatus;
 }

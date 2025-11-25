@@ -5,11 +5,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {clearUserData, setUserData} from "../../redux/slices/userSlice.ts";
 import {getMe} from "../../services/userService.ts";
 import {connectSocket} from "../../redux/actions/socketActions.ts";
+import {selectUserData} from "../../redux/store.ts";
+import type {User} from "../../types";
 
 const Layout: React.FC = () => {
     const { logoutCtx } = useAuth();
     const dispatch = useDispatch();
-    const userData = useSelector((state: any) => state.user.userData);
+    const userData: User | null = useSelector(selectUserData);
 
     const onLogout = () => {
         dispatch(clearUserData());
@@ -33,7 +35,7 @@ const Layout: React.FC = () => {
             <nav className="navbar">
                 <div className="nav-brand">FastAPI Admin</div>
                 <div className="nav-links">
-                    <p><strong>{userData?.full_name}</strong></p>
+                    <p><strong>{userData?.fullName}</strong></p>
                     <Link to="/">Dashboard</Link>
                     <Link to="/users">Users</Link>
                     <Link to="/shipments">Shipments</Link>

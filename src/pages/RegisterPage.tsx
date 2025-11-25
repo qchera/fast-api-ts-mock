@@ -26,7 +26,7 @@ const RegisterPage: React.FC = () => {
             await createUser({
                 email: formData.email,
                 username: formData.username,
-                full_name: formData.fullName,
+                fullName: formData.fullName,
                 password: formData.password,
             });
 

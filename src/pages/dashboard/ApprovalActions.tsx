@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import type {ApprovalStatus} from '../types';
+import type {ApprovalStatus} from '../../types';
 
 interface ApprovalActionsProps {
     id: string;

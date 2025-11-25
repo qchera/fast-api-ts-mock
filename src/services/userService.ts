@@ -5,7 +5,7 @@ interface UserCreate {
     email: string;
     password: string;
     username: string;
-    full_name: string;
+    fullName: string;
 }
 
 export const createUser = async (userData: UserCreate) => {

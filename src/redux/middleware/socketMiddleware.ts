@@ -1,7 +1,8 @@
 import {connectSocket, disconnectSocket} from "../actions/socketActions.ts";
 import {addPurchase, updateSale} from "../slices/userSlice.ts";
+import type {Middleware} from "@reduxjs/toolkit";
 
-export const SocketMiddleware = (store) => {
+export const SocketMiddleware: Middleware = (store) => {
     let socket: WebSocket | null = null;
 
     return (next) => (action) => {

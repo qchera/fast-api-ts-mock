@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout/Layout';
 import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
+import DashboardPage from './pages/dashboard/DashboardPage.tsx';
 import UsersPage from './pages/UsersPage';
 import ShipmentsPage from './pages/ShipmentsPage';
 import './App.css';
