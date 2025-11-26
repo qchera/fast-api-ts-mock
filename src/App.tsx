@@ -1,5 +1,5 @@
-import React, {type JSX} from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import {BrowserRouter as Router, Routes, Route, Navigate, Outlet} from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout/Layout';
 import LoginPage from './pages/LoginPage';
@@ -13,9 +13,9 @@ import {Provider} from "react-redux";
 import GlobalErrorListener from "./components/error/GlobalErrorListener";
 import {ToastContainer} from "react-toastify";
 
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+const ProtectedRoute: React.FC = () => {
     const { token } = useAuth();
-    return token ? children : <Navigate to="/login" />;
+    return token ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 const AppRoutes = () => {
@@ -24,10 +24,12 @@ const AppRoutes = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
-            <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-                <Route path="/" element={<DashboardPage />} />
-                <Route path="/users" element={<UsersPage />} />
-                <Route path="/shipments" element={<ShipmentsPage />} />
+            <Route element={<ProtectedRoute />}>
+                <Route element={<Layout />}>
+                    <Route path="/" element={<DashboardPage />} />
+                    <Route path="/users" element={<UsersPage />} />
+                    <Route path="/shipments" element={<ShipmentsPage />} />
+                </Route>
             </Route>
         </Routes>
     );
