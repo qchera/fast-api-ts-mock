@@ -27,7 +27,9 @@ const Layout: React.FC = () => {
             })
                 .catch(console.error);
         }
-        dispatch(connectSocket())
+        if (userData) {
+            dispatch(connectSocket())
+        }
     }, [dispatch, userData]);
 
     return (
