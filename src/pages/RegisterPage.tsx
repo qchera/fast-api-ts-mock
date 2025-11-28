@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUser } from '../services/userService';
+import {useDispatch} from "react-redux";
+import {setSuccessMsg} from "../redux/slices/successMsgSlice.ts";
 
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate();
@@ -12,6 +14,7 @@ const RegisterPage: React.FC = () => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,11 +33,11 @@ const RegisterPage: React.FC = () => {
                 password: formData.password,
             });
 
+            dispatch(setSuccessMsg('Check your inbox and verify email!'))
             navigate('/login');
         } catch (err: any) {
             console.error(err);
             const msg = err.response?.data?.detail || 'Registration failed';
-            // Обробка масиву помилок (стандарт Pydantic)
             setError(Array.isArray(msg) ? msg[0].msg : msg);
         } finally {
             setLoading(false);

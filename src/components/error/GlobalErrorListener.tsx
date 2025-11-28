@@ -1,12 +1,12 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {toast} from "react-toastify";
-import {setError} from "../../redux/slices/errorSlice";
+import {clearError} from "../../redux/slices/errorSlice";
+import {selectError} from "../../redux/store.ts";
 
 const GlobalErrorListener = () => {
 
-    const errorMessage = useSelector((state: any) => state.error.errorMessage);
-
+    const errorMessage = useSelector(selectError);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const GlobalErrorListener = () => {
                 draggable: true,
                 theme: "colored",
             });
-            dispatch(setError(null));
+            dispatch(clearError());
         }
 
     }, [errorMessage, dispatch]);

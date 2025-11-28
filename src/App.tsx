@@ -12,6 +12,8 @@ import store from "./redux/store";
 import {Provider} from "react-redux";
 import GlobalErrorListener from "./components/error/GlobalErrorListener";
 import {ToastContainer} from "react-toastify";
+import EmailVerificationPage from "./pages/EmailVerificationPage.tsx";
+import GlobalSuccessListener from "./components/success/GlobalSuccessListener.tsx";
 
 const ProtectedRoute: React.FC = () => {
     const { token } = useAuth();
@@ -23,6 +25,7 @@ const AppRoutes = () => {
         <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/verify-email" element={<EmailVerificationPage />} />
 
             <Route element={<ProtectedRoute />}>
                 <Route element={<Layout />}>
@@ -41,6 +44,7 @@ const App: React.FC = () => {
             <AuthProvider>
                 <Router>
                     <GlobalErrorListener />
+                    <GlobalSuccessListener />
                     <ToastContainer />
                     <AppRoutes />
                 </Router>

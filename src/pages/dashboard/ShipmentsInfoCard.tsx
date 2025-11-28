@@ -12,38 +12,36 @@ const ShipmentsInfoCard: React.FC = () => {
         <div>
             <h2>My Purchases</h2>
             {purchases ? (
-                <div className="card">
-                    <section className="table-section">
-                        <table className="data-table">
-                            <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Progress</th>
-                                <th>Estimated Delivery</th>
-                                <th>Seller's Username</th>
-                                <th>Approval Status</th>
+                <section className="table-section">
+                    <table className="data-table">
+                        <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Progress</th>
+                            <th>Estimated Delivery</th>
+                            <th>Seller's Username</th>
+                            <th>Approval Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {purchases.map((s) => (
+                            <tr key={s.product + s.estimatedDelivery}>
+                                <td>{s.product}</td>
+                                <td>
+                                    <span className={`status-badge ${s.progress.replace(' ', '-')}`}>
+                                        {s.progress}
+                                    </span>
+                                </td>
+                                <td>{formatDate(s.estimatedDelivery)}</td>
+                                <td>{s.sellerUsername}</td>
+                                <td>
+                                    <ApprovalColumn shipmentId={s.id} approvalStatus={s.approvalStatus} />
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {purchases.map((s) => (
-                                <tr key={s.product + s.estimatedDelivery}>
-                                    <td>{s.product}</td>
-                                    <td>
-                                        <span className={`status-badge ${s.progress.replace(' ', '-')}`}>
-                                            {s.progress}
-                                        </span>
-                                    </td>
-                                    <td>{formatDate(s.estimatedDelivery)}</td>
-                                    <td>{s.sellerUsername}</td>
-                                    <td>
-                                        <ApprovalColumn shipmentId={s.id} approvalStatus={s.approvalStatus} />
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </section>
-                </div>
+                        ))}
+                        </tbody>
+                    </table>
+                </section>
             ) : (
                 <div className="card">
                     <p>No shipments found.</p>
@@ -51,40 +49,38 @@ const ShipmentsInfoCard: React.FC = () => {
             )}
             <h2>My Sales</h2>
             {sales ? (
-                <div className="card">
-                    <section className="table-section">
-                        <table className="data-table">
-                            <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Progress</th>
-                                <th>Estimated Delivery</th>
-                                <th>Buyer's Username</th>
-                                <th>Approval Status</th>
+                <section className="table-section">
+                    <table className="data-table">
+                        <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Progress</th>
+                            <th>Estimated Delivery</th>
+                            <th>Buyer's Username</th>
+                            <th>Approval Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {sales.map((s) => (
+                            <tr key={s.product + s.estimatedDelivery}>
+                                <td>{s.product}</td>
+                                <td>
+                                    <span className={`status-badge ${s.progress.replace(' ', '-')}`}>
+                                        {s.progress}
+                                    </span>
+                                </td>
+                                <td>{formatDate(s.estimatedDelivery)}</td>
+                                <td>{s.buyerUsername}</td>
+                                <td>
+                                    <span className={`approval-badge ${s.approvalStatus}`}>
+                                        {s.approvalStatus}
+                                    </span>
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {sales.map((s) => (
-                                <tr key={s.product + s.estimatedDelivery}>
-                                    <td>{s.product}</td>
-                                    <td>
-                                        <span className={`status-badge ${s.progress.replace(' ', '-')}`}>
-                                            {s.progress}
-                                        </span>
-                                    </td>
-                                    <td>{formatDate(s.estimatedDelivery)}</td>
-                                    <td>{s.buyerUsername}</td>
-                                    <td>
-                                        <span className={`approval-badge ${s.approvalStatus}`}>
-                                            {s.approvalStatus}
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </section>
-                </div>
+                        ))}
+                        </tbody>
+                    </table>
+                </section>
             ) : (
                 <div className="card">
                     <p>No shipments found.</p>

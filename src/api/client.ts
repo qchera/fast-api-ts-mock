@@ -24,7 +24,7 @@ client.interceptors.response.use(
         let errorMessage = "Something went wrong";
 
         if (error.response) {
-            errorMessage = error.response.data?.detail || `Error: ${error.response.status}`;
+            errorMessage = error.response.data?.detail?.msg || error.response.data?.detail || `Error: ${error.response.status}`;
             console.error('API Error:', error.response.status, error.response.data);
         } else if (error.request) {
             errorMessage = "Network Error: No response from server";
@@ -39,7 +39,11 @@ client.interceptors.response.use(
             console.warn('401 Unauthorized - Redirecting to login...');
             store.dispatch(disconnectSocket())
             localStorage.removeItem('token');
-            window.location.href = '/login';
+            const isLoginPage = window.location.pathname === '/login'
+            const isEmailVerificationPage = window.location.pathname === '/verify-email'
+            if (!isLoginPage && !isEmailVerificationPage) {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }

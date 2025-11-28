@@ -14,3 +14,15 @@ export const login = async (username: string, password: string): Promise<string>
 export const logoutApi = async () => {
     await client.get('/logout');
 };
+
+export const verifyUrlSafeToken = async (token: string) => {
+    await client.post('/verify-email', null, {
+        params: { token: token }
+    })
+}
+
+export const resendEmailVerification = async (id: string) => {
+    await client.post('resend-verification', null, {
+        params: { id: id }
+    })
+}

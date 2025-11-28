@@ -1,11 +1,13 @@
 import {configureStore, createSelector} from "@reduxjs/toolkit";
 import errorReducer from "./slices/errorSlice";
 import userReducer from "./slices/userSlice";
+import successReducer from "./slices/successMsgSlice.ts";
 import {SocketMiddleware} from "./middleware/socketMiddleware.ts";
 
 const store = configureStore({
     reducer: {
       error: errorReducer,
+      success: successReducer,
       user: userReducer
     },
     middleware: (getDefaultMiddleware) =>
@@ -31,3 +33,5 @@ export const selectAllShipments = createSelector(
         return [...purchases, ...sales];
     }
 );
+export const selectError = (state: RootState) => state.error.errorMessage
+export const selectSuccessMsg = (state: RootState) => state.success.successMessage
