@@ -21,8 +21,12 @@ export const verifyUrlSafeToken = async (token: string) => {
     })
 }
 
-export const resendEmailVerification = async (id: string) => {
+export const resendEmailVerification = async (token: string) => {
     await client.post('resend-verification', null, {
-        params: { id: id }
+        params: { token: token }
     })
+}
+
+export const resendEmailVerificationByEmail = async (email: string) => {
+    await client.post('resend-verification-by-email', { email })
 }

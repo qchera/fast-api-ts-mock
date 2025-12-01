@@ -22,9 +22,13 @@ client.interceptors.response.use(
     (response) => response,
     (error) => {
         let errorMessage = "Something went wrong";
+        let errorCode = "UNKNOWN";
+        let errorMeta = null
 
         if (error.response) {
-            errorMessage = error.response.data?.detail?.msg || error.response.data?.detail || `Error: ${error.response.status}`;
+            errorMessage = error?.response?.data?.detail?.message || `Error: ${error.response.status}`;
+            errorCode = error?.response?.data?.detail?.code
+            errorMeta = error?.response?.data?.detail?.meta
             console.error('API Error:', error.response.status, error.response.data);
         } else if (error.request) {
             errorMessage = "Network Error: No response from server";
@@ -33,7 +37,11 @@ client.interceptors.response.use(
             errorMessage = error.message;
         }
 
-        store.dispatch(setError(errorMessage));
+        store.dispatch(setError({
+            message: errorMessage,
+            code: errorCode,
+            meta: errorMeta,
+        }));
 
         if (error.response?.status === 401) {
             console.warn('401 Unauthorized - Redirecting to login...');

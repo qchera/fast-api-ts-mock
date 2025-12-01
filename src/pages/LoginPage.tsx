@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {login} from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 import {useDispatch, useSelector} from "react-redux";
 import {clearError, setError} from "../redux/slices/errorSlice.ts";
-import {selectError} from "../redux/store.ts";
+import {selectErrorCode, selectErrorMeta, selectErrorMsg} from "../redux/store.ts";
+import FormError from "../components/error/FormError.tsx";
 
 const LoginPage: React.FC = () => {
     const [loginParam, setLoginParam] = useState('');
@@ -12,15 +13,9 @@ const LoginPage: React.FC = () => {
     const { loginCtx } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch()
-    const errorMessage = useSelector(selectError)
-    const [localError, setLocalError] = useState<string | null>(null)
-
-    useEffect(() => {
-        if (errorMessage && errorMessage !== localError) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setLocalError(errorMessage);
-        }
-    }, [errorMessage]);
+    const errorMessage = useSelector(selectErrorMsg)
+    const errorCode = useSelector(selectErrorCode)
+    const errorMeta = useSelector(selectErrorMeta)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,11 +24,15 @@ const LoginPage: React.FC = () => {
         try {
             console.log("Attempting login...");
             if (!loginParam) {
-                dispatch(setError("Your email or username can't be empty"))
+                dispatch(setError({
+                    message: "Your email or username can't be empty"
+                }))
                 return
             }
             if (!password) {
-                dispatch(setError("Your password can't be empty"))
+                dispatch(setError({
+                    message: "Your password can't be empty"
+                }))
                 return
             }
             const token = await login(loginParam, password);
@@ -44,6 +43,7 @@ const LoginPage: React.FC = () => {
                 console.log("Saving token:", token.substring(0, 10) + "...");
                 loginCtx(token);
 
+                dispatch(clearError())
                 setTimeout(() => {
                     navigate('/', { replace: true });
                 }, 100);
@@ -59,7 +59,7 @@ const LoginPage: React.FC = () => {
         <div className="auth-page">
             <div className="auth-card">
                 <h2 className="auth-title">Welcome Back</h2>
-                {localError && <div className="error-msg">{localError}</div>}
+                <FormError message={errorMessage} code={errorCode} meta={errorMeta} />
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
                         <label htmlFor="email">Email / Username</label>

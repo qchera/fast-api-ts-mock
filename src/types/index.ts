@@ -42,3 +42,9 @@ export interface ShipmentSummary {
     sellerUsername: string;
     approvalStatus: ApprovalStatus;
 }
+
+export interface ErrorData {
+    message: string | null;
+    code: string | null;
+    meta: any;
+}

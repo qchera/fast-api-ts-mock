@@ -8,7 +8,7 @@ import {setSuccessMsg} from "../redux/slices/successMsgSlice.ts";
 const EmailVerificationPage: React.FC = () => {
     const [searchParams] = useSearchParams()
     const token = searchParams.get('token') ?? ''
-    const [userId, setUserId] = useState('')
+    //const [userId, setUserId] = useState('')
     const [status, setStatus] = useState<'expired' | 'error' | 'success' | 'loading' | 'sent'>(token ? 'loading' : 'error')
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -20,9 +20,9 @@ const EmailVerificationPage: React.FC = () => {
             verifyUrlSafeToken(token)
                 .then(() => setStatus('success'))
                 .catch((err) => {
-                    if (err.response?.data?.detail.msg === 'Token has expired') {
+                    if (err.response?.data?.detail?.message === 'Token has expired') {
                         setStatus('expired')
-                        setUserId(err.response?.data?.detail.userId)
+                        //setUserId(err.response?.data?.detail?.meta["userId"])
                     } else {
                         setStatus('error')
                     }
@@ -41,7 +41,7 @@ const EmailVerificationPage: React.FC = () => {
     }, [status, navigate]);
 
     const handleResendEmail = () => {
-        resendEmailVerification(userId)
+        resendEmailVerification(token)
             .then(() => setStatus('sent'))
             .catch(() => {
                 setStatus('error')

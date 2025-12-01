@@ -33,5 +33,7 @@ export const selectAllShipments = createSelector(
         return [...purchases, ...sales];
     }
 );
-export const selectError = (state: RootState) => state.error.errorMessage
+export const selectErrorMsg = (state: RootState) => state.error.errorData?.message
+export const selectErrorCode = (state: RootState) => state.error.errorData?.code
+export const selectErrorMeta = (state: RootState) => state.error.errorData?.meta
 export const selectSuccessMsg = (state: RootState) => state.success.successMessage
